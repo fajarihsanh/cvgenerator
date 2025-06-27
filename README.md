@@ -238,12 +238,6 @@ Akses: [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
 ---
 
-## 📄 Lisensi
-
-MIT License
-
----
-
 ## 🆘 Troubleshooting
 
 * **OAuth Error**: periksa Client ID, Secret, dan URI redirect
