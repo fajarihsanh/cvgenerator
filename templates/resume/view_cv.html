@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}Lihat CV - {{ cv.full_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0 fw-bold">
+                        <i class="fas fa-file-alt me-2 text-primary"></i>CV - {{ cv.full_name }}
+                    </h3>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'print_cv' %}" class="btn btn-success">
+                            <i class="fas fa-file-pdf me-2"></i>Download PDF
+                        </a>
+                        <a href="{% url 'edit_cv' %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i>Edit CV
+                        </a>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <!-- Header Section -->
+                <div class="text-center mb-5 pb-4 border-bottom">
+                    {% if cv.profile_photo %}
+                        <img src="{{ cv.profile_photo.url }}" alt="Profile Photo" class="rounded-circle mb-4" style="width: 180px; height: 180px; object-fit: cover; border: 4px solid var(--primary-color); box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+                    {% else %}
+                        <div class="rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center bg-gradient-primary text-white" style="width: 180px; height: 180px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+                            <i class="fas fa-user fa-5x"></i>
+                        </div>
+                    {% endif %}
+                    <h1 class="text-primary mb-2 fw-bold">{{ cv.full_name }}</h1>
+                    <h4 class="text-muted mb-3 fw-semibold">{{ cv.job_title }}</h4>
+                    
+                    <!-- Contact Information -->
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="d-flex flex-column gap-2 align-items-center">
+                                <div class="d-flex align-items-center text-muted">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <span class="fs-5">{{ cv.user.email }}</span>
+                                </div>
+                                {% if cv.phone %}
+                                    <div class="d-flex align-items-center text-muted">
+                                        <i class="fas fa-phone me-2"></i>
+                                        <span class="fs-5">{{ cv.phone }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if cv.city or cv.country %}
+                                    <div class="d-flex align-items-center text-muted">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        <span class="fs-5">{{ cv.city|default:"" }}{% if cv.city and cv.country %}, {% endif %}{{ cv.country|default:"" }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media Links -->
+                {% if cv.github or cv.linkedin or cv.twitter or cv.instagram or cv.website or cv.portfolio %}
+                    <div class="text-center mb-5">
+                        <h5 class="text-primary mb-3 fw-bold">
+                            <i class="fas fa-share-alt me-2"></i>Media Sosial & Profesional
+                        </h5>
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            {% if cv.github %}
+                                <a href="{{ cv.github }}" target="_blank" class="btn btn-outline-dark">
+                                    <i class="fab fa-github me-2"></i>GitHub
+                                </a>
+                            {% endif %}
+                            {% if cv.linkedin %}
+                                <a href="{{ cv.linkedin }}" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fab fa-linkedin me-2"></i>LinkedIn
+                                </a>
+                            {% endif %}
+                            {% if cv.twitter %}
+                                <a href="{{ cv.twitter }}" target="_blank" class="btn btn-outline-info">
+                                    <i class="fab fa-twitter me-2"></i>Twitter
+                                </a>
+                            {% endif %}
+                            {% if cv.instagram %}
+                                <a href="{{ cv.instagram }}" target="_blank" class="btn btn-outline-danger">
+                                    <i class="fab fa-instagram me-2"></i>Instagram
+                                </a>
+                            {% endif %}
+                            {% if cv.website %}
+                                <a href="{{ cv.website }}" target="_blank" class="btn btn-outline-secondary">
+                                    <i class="fas fa-globe me-2"></i>Website
+                                </a>
+                            {% endif %}
+                            {% if cv.portfolio %}
+                                <a href="{{ cv.portfolio }}" target="_blank" class="btn btn-outline-warning">
+                                    <i class="fas fa-briefcase me-2"></i>Portfolio
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- CV Content -->
+                <div class="row g-4">
+                    <!-- About Section -->
+                    <div class="col-12">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h4 class="text-primary border-bottom border-primary pb-2 mb-3 fw-bold">
+                                    <i class="fas fa-info-circle me-2"></i>Tentang Saya
+                                </h4>
+                                <div class="ps-3 fs-5">
+                                    {{ cv.summary|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience & Education Row -->
+                    <div class="col-md-6">
+                        <div class="card border-0 bg-light h-100">
+                            <div class="card-body">
+                                <h4 class="text-primary border-bottom border-primary pb-2 mb-3 fw-bold">
+                                    <i class="fas fa-briefcase me-2"></i>Pengalaman Kerja
+                                </h4>
+                                <div class="ps-3">
+                                    {{ cv.experience|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-0 bg-light h-100">
+                            <div class="card-body">
+                                <h4 class="text-primary border-bottom border-primary pb-2 mb-3 fw-bold">
+                                    <i class="fas fa-graduation-cap me-2"></i>Pendidikan
+                                </h4>
+                                <div class="ps-3">
+                                    {{ cv.education|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills Section -->
+                    <div class="col-12">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h4 class="text-primary border-bottom border-primary pb-2 mb-3 fw-bold">
+                                    <i class="fas fa-tools me-2"></i>Keahlian
+                                </h4>
+                                <div class="ps-3">
+                                    {{ cv.skills|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mt-5 pt-4 border-top">
+                    <h6 class="text-muted mb-4 fw-semibold text-center">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{% url 'print_cv' %}" class="btn btn-success">
+                            <i class="fas fa-file-pdf me-2"></i>Download PDF
+                        </a>
+                        <a href="{% url 'edit_cv' %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i>Edit CV
+                        </a>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Dashboard
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="mt-5 pt-4 border-top text-center">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                Dibuat: {{ cv.created_at|date:"d M Y" }}
+                            </small>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                Diperbarui: {{ cv.updated_at|date:"d M Y H:i" }}
+                            </small>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted">
+                                <i class="fas fa-star me-1"></i>
+                                CV Generator Pro
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

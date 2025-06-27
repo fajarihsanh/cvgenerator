@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - {{ cv.full_name }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+            @top-center {
+                content: "CV - {{ cv.full_name }}";
+                font-size: 10pt;
+                color: #666;
+            }
+            @bottom-center {
+                content: "Halaman " counter(page) " dari " counter(pages);
+                font-size: 10pt;
+                color: #666;
+            }
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            page-break-after: avoid;
+        }
+        
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #007bff;
+            margin: 0 auto 15px;
+            display: block;
+        }
+        
+        .name {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #007bff;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .title {
+            font-size: 1.3em;
+            color: #666;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        
+        .contact-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        .contact-info p {
+            margin: 8px 0;
+            font-size: 11pt;
+        }
+        
+        .contact-info strong {
+            color: #007bff;
+            min-width: 100px;
+            display: inline-block;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 10pt;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .content {
+            text-align: justify;
+            font-size: 11pt;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .skill-item {
+            background: #e3f2fd;
+            padding: 8px 12px;
+            border-radius: 5px;
+            border-left: 3px solid #007bff;
+            font-size: 10pt;
+        }
+        
+        .experience-item, .education-item {
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 3px solid #e0e0e0;
+        }
+        
+        .experience-item h4, .education-item h4 {
+            color: #007bff;
+            margin: 0 0 5px 0;
+            font-size: 12pt;
+        }
+        
+        .experience-item p, .education-item p {
+            margin: 3px 0;
+            font-size: 10pt;
+        }
+        
+        .date {
+            color: #666;
+            font-style: italic;
+            font-size: 9pt;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 9pt;
+            color: #666;
+        }
+        
+        /* Print specific styles */
+        @media print {
+            body { margin: 0; }
+            .section { page-break-inside: avoid; }
+            .header { page-break-after: avoid; }
+            .social-links a { background: #007bff !important; color: white !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        {% if cv.profile_photo %}
+            <img src="{{ cv.profile_photo.url }}" alt="Profile Photo" class="profile-photo">
+        {% endif %}
+        <h1 class="name">{{ cv.full_name }}</h1>
+        <p class="title">{{ cv.job_title }}</p>
+    </div>
+    
+    <!-- Contact Information -->
+    <div class="contact-info">
+        <h3 style="color: #007bff; margin-bottom: 15px;">Informasi Kontak</h3>
+        <p><strong>Email:</strong> {{ cv.user.email }}</p>
+        {% if cv.phone %}
+            <p><strong>Telepon:</strong> {{ cv.phone }}</p>
+        {% endif %}
+        {% if cv.address %}
+            <p><strong>Alamat:</strong> {{ cv.address }}</p>
+        {% endif %}
+        {% if cv.city or cv.country %}
+            <p><strong>Lokasi:</strong> {{ cv.city|default:"" }}{% if cv.city and cv.country %}, {% endif %}{{ cv.country|default:"" }}</p>
+        {% endif %}
+    </div>
+    
+    <!-- Social Media Links -->
+    {% if cv.github or cv.linkedin or cv.twitter or cv.instagram or cv.website or cv.portfolio %}
+        <div class="social-links">
+            <h3 style="color: #007bff; margin-bottom: 15px;">Media Sosial & Profesional</h3>
+            {% if cv.github %}
+                <a href="{{ cv.github }}">GitHub</a>
+            {% endif %}
+            {% if cv.linkedin %}
+                <a href="{{ cv.linkedin }}">LinkedIn</a>
+            {% endif %}
+            {% if cv.twitter %}
+                <a href="{{ cv.twitter }}">Twitter</a>
+            {% endif %}
+            {% if cv.instagram %}
+                <a href="{{ cv.instagram }}">Instagram</a>
+            {% endif %}
+            {% if cv.website %}
+                <a href="{{ cv.website }}">Website</a>
+            {% endif %}
+            {% if cv.portfolio %}
+                <a href="{{ cv.portfolio }}">Portfolio</a>
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    <div class="section">
+        <h2 class="section-title">Tentang Saya</h2>
+        <div class="content">
+            {{ cv.summary|safe }}
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2 class="section-title">Pengalaman Kerja</h2>
+        <div class="content">
+            {{ cv.experience|safe }}
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2 class="section-title">Pendidikan</h2>
+        <div class="content">
+            {{ cv.education|safe }}
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2 class="section-title">Keahlian</h2>
+        <div class="content">
+            {{ cv.skills|safe }}
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>CV ini dibuat dengan CV Generator Pro - {{ cv.updated_at|date:"d F Y H:i" }}</p>
+    </div>
+</body>
+</html> 

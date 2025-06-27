@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - CV Generator Pro{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        {% if cv.profile_photo %}
+                            <img src="{{ cv.profile_photo.url }}" alt="Profile Photo" class="rounded-circle me-4" style="width: 100px; height: 100px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                        {% else %}
+                            <div class="rounded-circle me-4 d-flex align-items-center justify-content-center bg-gradient-primary text-white" style="width: 100px; height: 100px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                                <i class="fas fa-user fa-3x"></i>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <h2 class="mb-1 fw-bold">
+                                {{ cv.full_name|default:"Nama Lengkap" }}
+                            </h2>
+                            <p class="text-muted mb-2 fs-5">{{ cv.job_title|default:"Jabatan/Posisi" }}</p>
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="fas fa-envelope me-2"></i>
+                                <span>{{ cv.user.email }}</span>
+                            </div>
+                            {% if cv.phone %}
+                                <div class="d-flex align-items-center text-muted">
+                                    <i class="fas fa-phone me-2"></i>
+                                    <span>{{ cv.phone }}</span>
+                                </div>
+                            {% endif %}
+                            {% if cv.city or cv.country %}
+                                <div class="d-flex align-items-center text-muted">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    <span>{{ cv.city|default:"" }}{% if cv.city and cv.country %}, {% endif %}{{ cv.country|default:"" }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        {% if cv.full_name %}
+                            <a href="{% url 'view_cv' %}" class="btn btn-info">
+                                <i class="fas fa-eye me-2"></i>Lihat CV
+                            </a>
+                            <a href="{% url 'print_cv' %}" class="btn btn-success">
+                                <i class="fas fa-file-pdf me-2"></i>Download PDF
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'edit_cv' %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i>Edit CV
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                {% if cv.full_name %}
+                    <!-- Social Media Links -->
+                    {% if cv.github or cv.linkedin or cv.twitter or cv.instagram or cv.website or cv.portfolio %}
+                        <div class="mb-4">
+                            <h6 class="text-muted mb-3 fw-semibold">
+                                <i class="fas fa-share-alt me-2"></i>Media Sosial & Profesional
+                            </h6>
+                            <div class="d-flex gap-2 flex-wrap">
+                                {% if cv.github %}
+                                    <a href="{{ cv.github }}" target="_blank" class="btn btn-outline-dark btn-sm">
+                                        <i class="fab fa-github me-1"></i>GitHub
+                                    </a>
+                                {% endif %}
+                                {% if cv.linkedin %}
+                                    <a href="{{ cv.linkedin }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="fab fa-linkedin me-1"></i>LinkedIn
+                                    </a>
+                                {% endif %}
+                                {% if cv.twitter %}
+                                    <a href="{{ cv.twitter }}" target="_blank" class="btn btn-outline-info btn-sm">
+                                        <i class="fab fa-twitter me-1"></i>Twitter
+                                    </a>
+                                {% endif %}
+                                {% if cv.instagram %}
+                                    <a href="{{ cv.instagram }}" target="_blank" class="btn btn-outline-danger btn-sm">
+                                        <i class="fab fa-instagram me-1"></i>Instagram
+                                    </a>
+                                {% endif %}
+                                {% if cv.website %}
+                                    <a href="{{ cv.website }}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-globe me-1"></i>Website
+                                    </a>
+                                {% endif %}
+                                {% if cv.portfolio %}
+                                    <a href="{{ cv.portfolio }}" target="_blank" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-briefcase me-1"></i>Portfolio
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- CV Content -->
+                    <div class="row g-4">
+                        <!-- About Section -->
+                        <div class="col-12">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary mb-3">
+                                        <i class="fas fa-info-circle me-2"></i>Tentang Saya
+                                    </h5>
+                                    <div class="ps-3">
+                                        {{ cv.summary|safe|default:"Belum ada deskripsi" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Experience Section -->
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary mb-3">
+                                        <i class="fas fa-briefcase me-2"></i>Pengalaman Kerja
+                                    </h5>
+                                    <div class="ps-3">
+                                        {{ cv.experience|safe|default:"Belum ada pengalaman kerja" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Education Section -->
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary mb-3">
+                                        <i class="fas fa-graduation-cap me-2"></i>Pendidikan
+                                    </h5>
+                                    <div class="ps-3">
+                                        {{ cv.education|safe|default:"Belum ada pendidikan" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Skills Section -->
+                        <div class="col-12">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary mb-3">
+                                        <i class="fas fa-tools me-2"></i>Keahlian
+                                    </h5>
+                                    <div class="ps-3">
+                                        {{ cv.skills|safe|default:"Belum ada keahlian" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="mt-5 pt-4 border-top">
+                        <h6 class="text-muted mb-4 fw-semibold">
+                            <i class="fas fa-bolt me-2"></i>Quick Actions
+                        </h6>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <a href="{% url 'view_cv' %}" class="btn btn-outline-info">
+                                <i class="fas fa-eye me-2"></i>Lihat CV
+                            </a>
+                            <a href="{% url 'print_cv' %}" class="btn btn-outline-success">
+                                <i class="fas fa-file-pdf me-2"></i>Download PDF
+                            </a>
+                            <a href="{% url 'edit_cv' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-edit me-2"></i>Edit CV
+                            </a>
+                            <a href="{% url 'delete_cv' %}" class="btn btn-outline-danger">
+                                <i class="fas fa-trash me-2"></i>Hapus CV
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- CV Stats -->
+                    <div class="mt-4 pt-3 border-top">
+                        <div class="row text-center">
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 bg-primary bg-opacity-10 rounded-3">
+                                    <i class="fas fa-calendar-alt fa-2x text-primary mb-2"></i>
+                                    <h6 class="mb-1 fw-bold">Dibuat</h6>
+                                    <small class="text-muted">{{ cv.created_at|date:"d M Y" }}</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 bg-success bg-opacity-10 rounded-3">
+                                    <i class="fas fa-clock fa-2x text-success mb-2"></i>
+                                    <h6 class="mb-1 fw-bold">Diperbarui</h6>
+                                    <small class="text-muted">{{ cv.updated_at|date:"d M Y" }}</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 bg-info bg-opacity-10 rounded-3">
+                                    <i class="fas fa-user fa-2x text-info mb-2"></i>
+                                    <h6 class="mb-1 fw-bold">Status</h6>
+                                    <small class="text-muted">Lengkap</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 bg-warning bg-opacity-10 rounded-3">
+                                    <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                                    <h6 class="mb-1 fw-bold">Kualitas</h6>
+                                    <small class="text-muted">Professional</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Empty State -->
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-file-alt fa-4x text-muted mb-3"></i>
+                            <h3 class="text-muted fw-bold">CV Anda masih kosong</h3>
+                            <p class="text-muted fs-5">Mulai dengan mengisi informasi CV Anda untuk membuat CV yang profesional</p>
+                        </div>
+                        <a href="{% url 'edit_cv' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Buat CV Pertama
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

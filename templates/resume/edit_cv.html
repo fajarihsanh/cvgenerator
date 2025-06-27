@@ -1,0 +1,383 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit CV - CV Generator Pro{% endblock %}
+
+{% block extra_css %}
+{{ form.media.css }}
+<style>
+    .ck-editor__editable {
+        min-height: 200px;
+        border-radius: 10px !important;
+    }
+    
+    .form-section {
+        background: rgba(248, 250, 252, 0.8);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border-color);
+    }
+    
+    .form-section h5 {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .photo-preview {
+        border: 2px dashed var(--border-color);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+    }
+    
+    .photo-preview:hover {
+        border-color: var(--primary-color);
+        background: rgba(79, 70, 229, 0.05);
+    }
+    
+    .current-photo {
+        border: 3px solid var(--primary-color);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .progress-indicator {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: none;
+    }
+    
+    .social-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0 fw-bold">
+                        <i class="fas fa-edit me-2 text-primary"></i>Edit CV
+                    </h3>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali
+                        </a>
+                        <button type="submit" form="cv-form" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Simpan CV
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" id="cv-form">
+                    {% csrf_token %}
+                    
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-user me-2"></i>Informasi Pribadi</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.full_name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user me-1"></i>Nama Lengkap
+                                </label>
+                                {{ form.full_name }}
+                                {% if form.full_name.errors %}
+                                    <div class="text-danger small mt-1">{{ form.full_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.job_title.id_for_label }}" class="form-label">
+                                    <i class="fas fa-briefcase me-1"></i>Jabatan/Posisi
+                                </label>
+                                {{ form.job_title }}
+                                {% if form.job_title.errors %}
+                                    <div class="text-danger small mt-1">{{ form.job_title.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Information Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-address-book me-2"></i>Informasi Kontak</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                    <i class="fas fa-phone me-1"></i>Nomor Telepon
+                                </label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.city.id_for_label }}" class="form-label">
+                                    <i class="fas fa-city me-1"></i>Kota
+                                </label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.country.id_for_label }}" class="form-label">
+                                    <i class="fas fa-globe me-1"></i>Negara
+                                </label>
+                                {{ form.country }}
+                                {% if form.country.errors %}
+                                    <div class="text-danger small mt-1">{{ form.country.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <label for="{{ form.address.id_for_label }}" class="form-label">
+                                    <i class="fas fa-map-marker-alt me-1"></i>Alamat Lengkap
+                                </label>
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="text-danger small mt-1">{{ form.address.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Media Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-share-alt me-2"></i>Media Sosial & Profesional</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.github.id_for_label }}" class="form-label">
+                                    <i class="fab fa-github me-1"></i>GitHub
+                                </label>
+                                {{ form.github }}
+                                {% if form.github.errors %}
+                                    <div class="text-danger small mt-1">{{ form.github.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.linkedin.id_for_label }}" class="form-label">
+                                    <i class="fab fa-linkedin me-1"></i>LinkedIn
+                                </label>
+                                {{ form.linkedin }}
+                                {% if form.linkedin.errors %}
+                                    <div class="text-danger small mt-1">{{ form.linkedin.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.twitter.id_for_label }}" class="form-label">
+                                    <i class="fab fa-twitter me-1"></i>Twitter/X
+                                </label>
+                                {{ form.twitter }}
+                                {% if form.twitter.errors %}
+                                    <div class="text-danger small mt-1">{{ form.twitter.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.instagram.id_for_label }}" class="form-label">
+                                    <i class="fab fa-instagram me-1"></i>Instagram
+                                </label>
+                                {{ form.instagram }}
+                                {% if form.instagram.errors %}
+                                    <div class="text-danger small mt-1">{{ form.instagram.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.website.id_for_label }}" class="form-label">
+                                    <i class="fas fa-globe me-1"></i>Website Pribadi
+                                </label>
+                                {{ form.website }}
+                                {% if form.website.errors %}
+                                    <div class="text-danger small mt-1">{{ form.website.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.portfolio.id_for_label }}" class="form-label">
+                                    <i class="fas fa-briefcase me-1"></i>Portfolio
+                                </label>
+                                {{ form.portfolio }}
+                                {% if form.portfolio.errors %}
+                                    <div class="text-danger small mt-1">{{ form.portfolio.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Photo Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-camera me-2"></i>Foto Profil</h5>
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <label for="{{ form.profile_photo.id_for_label }}" class="form-label">
+                                    Upload Foto Profil
+                                </label>
+                                {{ form.profile_photo }}
+                                {% if form.profile_photo.errors %}
+                                    <div class="text-danger small mt-1">{{ form.profile_photo.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Format yang didukung: JPG, PNG, GIF. Ukuran maksimal: 5MB
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                {% if form.instance.profile_photo %}
+                                    <div class="current-photo">
+                                        <img src="{{ form.instance.profile_photo.url }}" alt="Current Photo" class="w-100">
+                                    </div>
+                                    <small class="text-muted mt-2 d-block text-center">Foto saat ini</small>
+                                {% else %}
+                                    <div class="photo-preview">
+                                        <i class="fas fa-user fa-3x text-muted mb-2"></i>
+                                        <p class="text-muted mb-0">Belum ada foto</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- About Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-info-circle me-2"></i>Tentang Saya</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.summary.id_for_label }}" class="form-label">
+                                Deskripsi singkat tentang diri Anda
+                            </label>
+                            {{ form.summary }}
+                            {% if form.summary.errors %}
+                                <div class="text-danger small mt-1">{{ form.summary.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text mt-2">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Tulis deskripsi yang menarik dan profesional tentang pengalaman dan keahlian Anda
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Experience Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-briefcase me-2"></i>Pengalaman Kerja</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.experience.id_for_label }}" class="form-label">
+                                Riwayat pekerjaan dan pengalaman profesional
+                            </label>
+                            {{ form.experience }}
+                            {% if form.experience.errors %}
+                                <div class="text-danger small mt-1">{{ form.experience.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text mt-2">
+                                <i class="fas fa-tips me-1"></i>
+                                Gunakan format yang terstruktur dengan tanggal, posisi, dan deskripsi pekerjaan
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Education Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-graduation-cap me-2"></i>Pendidikan</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.education.id_for_label }}" class="form-label">
+                                Riwayat pendidikan formal
+                            </label>
+                            {{ form.education }}
+                            {% if form.education.errors %}
+                                <div class="text-danger small mt-1">{{ form.education.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text mt-2">
+                                <i class="fas fa-tips me-1"></i>
+                                Cantumkan gelar, institusi, tahun lulus, dan prestasi akademik
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Skills Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-tools me-2"></i>Keahlian</h5>
+                        <div class="mb-4">
+                            <label for="{{ form.skills.id_for_label }}" class="form-label">
+                                Keahlian teknis dan soft skills
+                            </label>
+                            {{ form.skills }}
+                            {% if form.skills.errors %}
+                                <div class="text-danger small mt-1">{{ form.skills.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text mt-2">
+                                <i class="fas fa-tips me-1"></i>
+                                Kelompokkan keahlian berdasarkan kategori (Teknis, Soft Skills, Bahasa, dll.)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-3 justify-content-center pt-3 border-top">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Simpan CV
+                        </button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-times me-2"></i>Batal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Indicator -->
+<div class="progress-indicator" id="progress-indicator">
+    <div class="d-flex align-items-center">
+        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+        <span class="text-primary fw-semibold">Menyimpan CV...</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ form.media.js }}
+<script>
+    // Show progress indicator when form is submitted
+    document.getElementById('cv-form').addEventListener('submit', function() {
+        document.getElementById('progress-indicator').style.display = 'block';
+    });
+    
+    // Auto-save functionality (optional)
+    let autoSaveTimer;
+    const form = document.getElementById('cv-form');
+    const inputs = form.querySelectorAll('input, textarea, select');
+    
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                // Auto-save logic can be added here
+                console.log('Auto-save triggered');
+            }, 3000);
+        });
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Hapus CV - CV Generator Pro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3 class="mb-0 fw-bold">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Hapus CV
+                </h3>
+            </div>
+            <div class="card-body text-center p-4">
+                <div class="mb-4">
+                    <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                        <i class="fas fa-trash fa-3x text-danger"></i>
+                    </div>
+                    <h4 class="text-danger fw-bold mb-3">Apakah Anda yakin ingin menghapus CV ini?</h4>
+                    <p class="text-muted fs-5">Tindakan ini tidak dapat dibatalkan dan semua data CV akan hilang permanen.</p>
+                </div>
+
+                {% if cv.full_name %}
+                    <div class="alert alert-warning border-0 bg-warning bg-opacity-10">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-info-circle me-2"></i>CV yang akan dihapus:
+                        </h5>
+                        <div class="row text-start">
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Nama:</strong></p>
+                                <p class="text-muted">{{ cv.full_name }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Jabatan:</strong></p>
+                                <p class="text-muted">{{ cv.job_title }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-2"><strong>Terakhir diperbarui:</strong></p>
+                                <p class="text-muted">{{ cv.updated_at|date:"d M Y H:i" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="d-flex gap-3 justify-content-center mt-4">
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-trash me-2"></i>Ya, Hapus CV
+                        </button>
+                    </form>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-times me-2"></i>Batal
+                    </a>
+                </div>
+
+                <div class="mt-4 pt-3 border-top">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <i class="fas fa-shield-alt fa-2x text-warning mb-2"></i>
+                            <h6 class="fw-bold">Aman</h6>
+                            <small class="text-muted">Data dihapus permanen</small>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-redo fa-2x text-info mb-2"></i>
+                            <h6 class="fw-bold">Buat Ulang</h6>
+                            <small class="text-muted">CV baru kapan saja</small>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-download fa-2x text-success mb-2"></i>
+                            <h6 class="fw-bold">Backup</h6>
+                            <small class="text-muted">Download PDF dulu</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Setelah dihapus, Anda dapat membuat CV baru kapan saja.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
