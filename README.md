@@ -1,232 +1,266 @@
-# CV Generator - Aplikasi Web Generator CV
+# CV Generator - Aplikasi Web Pembuat CV Otomatis
 
-Aplikasi Django untuk membuat dan mengelola CV pribadi dengan fitur OAuth login (Google & GitHub) dan editor WYSIWYG.
+Proyek Django ini adalah aplikasi web untuk membuat, mengedit, dan mengelola Curriculum Vitae (CV) secara personal. Mendukung login menggunakan OAuth (Google dan GitHub), dilengkapi dengan editor WYSIWYG berbasis CKEditor untuk kemudahan pengisian konten CV.
 
-## 🚀 Fitur Utama
+---
 
-- ✅ Login/Logout menggunakan OAuth 2.0 (Google dan GitHub)
-- ✅ Form CV dengan CKEditor (WYSIWYG)
-- ✅ Dashboard CV user (buat, edit, tampilkan)
-- ✅ Autentikasi dan proteksi data per user
-- ✅ UI/UX modern dengan Bootstrap 5
-- ✅ Responsive design
+## 🚀 Fitur Unggulan
+
+* 🔐 Autentikasi menggunakan OAuth 2.0 (Google & GitHub)
+* 📝 Editor CV berbasis CKEditor (WYSIWYG)
+* 📋 CRUD CV: buat, tampilkan, edit, hapus, dan unduh PDF
+* 🖼️ Upload foto profil ke dalam CV
+* 🔐 Keamanan data per user
+* 💻 UI/UX modern dan responsive menggunakan Bootstrap 5
+
+---
 
 ## 🛠️ Teknologi yang Digunakan
 
-- **Backend**: Python 3, Django 5.2.3
-- **Frontend**: Bootstrap 5, Font Awesome
-- **Editor**: CKEditor 4
-- **OAuth**: social-auth-app-django
-- **Database**: SQLite3 (development)
-- **Hosting**: PythonAnywhere
+* **Backend**: Python 3 + Django 5.2.x
+* **Frontend**: Bootstrap 5, Font Awesome, Google Fonts
+* **Editor**: CKEditor (via django-ckeditor)
+* **OAuth**: social-auth-app-django
+* **Export PDF**: WeasyPrint
+* **Database**: SQLite3 (untuk pengembangan lokal)
+* **Deployment**: PythonAnywhere
 
-## 📁 Struktur Proyek
+---
+
+## 📚 Library Python
+
+* `django` — Framework utama
+* `social-auth-app-django` — OAuth login
+* `django-ckeditor` — WYSIWYG editor
+* `weasyprint` — Export ke PDF
+* `pillow` — Upload gambar
+* `python-dotenv` — Load file .env
+* `requests` — Client HTTP (OAuth)
+
+---
+
+## 🌐 API Eksternal
+
+* **Google OAuth 2.0 API** — Login Google
+* **GitHub OAuth API** — Login GitHub
+* **Google Fonts API** — Font Inter
+* **Bootstrap CDN & FontAwesome** — Tampilan frontend
+
+---
+
+## 📁 Struktur Folder
 
 ```
 cvgen/
-├── env/                          # Virtual environment
-├── cvgen_project/               # Django project settings
+├── env/                      # Virtual environment
+├── cvgen_project/           # Pengaturan proyek Django
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-├── resume/                      # Main app
-│   ├── models.py               # CV model
-│   ├── views.py                # Views
-│   ├── forms.py                # Forms
-│   ├── urls.py                 # URL patterns
-│   └── admin.py                # Admin interface
-├── templates/                   # HTML templates
+├── resume/                  # App utama
+│   ├── models.py
+│   ├── views.py
+│   ├── forms.py
+│   ├── urls.py
+│   └── admin.py
+├── templates/
 │   ├── base.html
 │   └── resume/
 │       ├── login.html
 │       ├── dashboard.html
 │       └── edit_cv.html
-├── media/                       # Uploaded files
-├── static/                      # Static files
-├── requirements.txt             # Dependencies
-├── manage.py                    # Django management
-└── README.md                    # This file
+├── media/                   # Upload user
+├── static/                  # File statis (ikon, CSS, dsb)
+├── requirements.txt         # Daftar dependensi
+├── manage.py                # Entrypoint Django
+└── README.md                # Dokumentasi
 ```
 
-## 🚀 Instalasi & Setup Lokal
+---
 
-### 1. Clone Repository
+## 🚀 Instalasi Lokal
+
+### 1. Clone Project
+
 ```bash
 git clone <repository-url>
 cd cvgen
 ```
 
 ### 2. Setup Virtual Environment
+
 ```bash
 python3 -m venv env
-source env/bin/activate  # Linux/Mac
-# atau
-env\Scripts\activate     # Windows
+source env/bin/activate  # Linux/macOS
+# atau untuk Windows:
+env\Scripts\activate
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Setup Environment Variables
-```bash
-# Google OAuth
-export GOOGLE_CLIENT_ID="your_google_client_id"
-export GOOGLE_CLIENT_SECRET="your_google_client_secret"
+### 4. Konfigurasi Environment
 
-# GitHub OAuth
-export GITHUB_CLIENT_ID="your_github_client_id"
-export GITHUB_CLIENT_SECRET="your_github_client_secret"
+Buat file `.env` dan isi:
+
+```env
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=your_google_client_id
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=your_google_client_secret
+SOCIAL_AUTH_GITHUB_KEY=your_github_client_id
+SOCIAL_AUTH_GITHUB_SECRET=your_github_client_secret
 ```
 
-### 5. Database Migration
+### 5. Migrasi Database
+
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 6. Create Superuser
+### 6. Buat Superuser (opsional)
+
 ```bash
 python manage.py createsuperuser
 ```
 
-### 7. Run Development Server
+### 7. Jalankan Server
+
 ```bash
 python manage.py runserver
 ```
 
-Akses aplikasi di: http://localhost:8000
+Akses di: [http://localhost:8000](http://localhost:8000)
 
-## 🔐 Setup OAuth
+---
 
-### Google OAuth Setup
-1. Buka [Google Cloud Console](https://console.cloud.google.com/)
-2. Buat project baru atau pilih yang ada
-3. Aktifkan "Google+ API" dan "Google OAuth2 API"
+## 🔐 Konfigurasi OAuth
+
+### Google
+
+1. Akses [Google Cloud Console](https://console.cloud.google.com/)
+2. Buat project baru
+3. Aktifkan "OAuth 2.0 API"
 4. Buat OAuth 2.0 Client ID
-5. Authorized redirect URI: `http://localhost:8000/auth/complete/google-oauth2/`
-6. Simpan Client ID dan Client Secret
+5. Redirect URI:
 
-### GitHub OAuth Setup
-1. Buka [GitHub Developer Settings](https://github.com/settings/developers)
-2. Klik "New OAuth App"
-3. Authorization callback URL: `http://localhost:8000/auth/complete/github/`
-4. Simpan Client ID dan Client Secret
+   * `http://localhost:8000/auth/complete/google-oauth2/`
+   * `https://<username>.pythonanywhere.com/auth/complete/google-oauth2/`
 
-## 🌐 Deployment ke PythonAnywhere
+### GitHub
 
-### 1. Buat Akun PythonAnywhere
-- Daftar di [pythonanywhere.com](https://www.pythonanywhere.com/)
+1. Buka [Developer Settings GitHub](https://github.com/settings/developers)
+2. Buat aplikasi baru
+3. Callback URL:
 
-### 2. Clone Repository
+   * `http://localhost:8000/auth/complete/github/`
+   * `https://<username>.pythonanywhere.com/auth/complete/github/`
+
+---
+
+## 🚀 Deployment di PythonAnywhere
+
+### 1. Setup
+
 ```bash
 git clone <repository-url>
 cd cvgen
-```
-
-### 3. Setup Virtual Environment
-```bash
-mkvirtualenv --python=/usr/bin/python3.9 cvgen-env
+python3 -m venv env
+source env/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Konfigurasi Environment Variables
-- Di dashboard PythonAnywhere, masuk ke "Web" > "Environment Variables"
-- Tambahkan:
-  - `GOOGLE_CLIENT_ID`
-  - `GOOGLE_CLIENT_SECRET`
-  - `GITHUB_CLIENT_ID`
-  - `GITHUB_CLIENT_SECRET`
+### 2. Set Environment Variables di dashboard PythonAnywhere
 
-### 5. Konfigurasi WSGI
-Edit file WSGI di dashboard PythonAnywhere:
+### 3. Edit WSGI Configuration
+
 ```python
 import os
 import sys
+from dotenv import load_dotenv
+
 path = '/home/username/cvgen'
 if path not in sys.path:
     sys.path.append(path)
+load_dotenv(os.path.join(path, '.env'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'cvgen_project.settings'
 ```
 
-### 6. Setup Static & Media Files
-- Di dashboard PythonAnywhere, atur static files:
-  - URL: `/static/` → path: `/home/username/cvgen/static/`
-  - URL: `/media/` → path: `/home/username/cvgen/media/`
+### 4. Konfigurasi Static & Media Files
 
-### 7. Database & Static Files
+* `/static/` → `/home/username/cvgen/static/`
+* `/media/` → `/home/username/cvgen/media/`
+
+### 5. Migrasi & Collect Static
+
 ```bash
 python manage.py migrate
 python manage.py collectstatic
 ```
 
-### 8. Reload Web App
-- Klik "Reload" di dashboard PythonAnywhere
+### 6. Reload Web App dari Dashboard
 
-## 📝 Penggunaan
+---
 
-### 1. Login
-- Akses aplikasi
-- Pilih login dengan Google atau GitHub
-- Authorize aplikasi
+## 🧑‍💻 Cara Pakai
 
-### 2. Buat/Edit CV
-- Klik "Edit CV" di dashboard
-- Isi informasi:
-  - Nama lengkap
-  - Jabatan/Posisi
-  - Tentang saya (deskripsi)
-  - Pengalaman kerja
-  - Pendidikan
-  - Keahlian
-- Gunakan CKEditor untuk formatting
-- Klik "Simpan CV"
+### Login
 
-### 3. Lihat CV
-- CV akan ditampilkan di dashboard
-- Format yang rapi dan profesional
+* Pilih Google atau GitHub untuk login
+
+### Buat/Edit CV
+
+* Isi form: nama, deskripsi, pengalaman, pendidikan, keahlian
+* Gunakan editor WYSIWYG
+* Simpan CV
+
+### Lihat/Unduh CV
+
+* CV tampil di dashboard
+* Bisa diunduh dalam format PDF
+
+---
 
 ## 🔧 Admin Panel
 
-Akses admin panel di: http://localhost:8000/admin/
-- Username: admin
-- Password: (yang dibuat saat setup)
+Akses: [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
-## 📋 Requirements
+---
 
-Lihat `requirements.txt` untuk daftar lengkap dependencies.
+## 🤝 Kontribusi
 
-## 🤝 Contributing
-
-1. Fork repository
-2. Buat feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push ke branch (`git push origin feature/AmazingFeature`)
+1. Fork repo
+2. Buat branch: `git checkout -b fitur/fiturBaru`
+3. Commit: `git commit -m 'Menambahkan fitur'`
+4. Push: `git push origin fitur/fiturBaru`
 5. Buat Pull Request
 
-## 📄 License
+---
 
-Proyek ini dibuat untuk keperluan UAS. Silakan gunakan sesuai kebutuhan.
+## 📄 Lisensi
+
+MIT License
+
+---
 
 ## 🆘 Troubleshooting
 
-### Error OAuth
-- Pastikan Client ID dan Secret sudah benar
-- Periksa redirect URI di provider OAuth
-- Pastikan environment variables sudah diset
+* **OAuth Error**: periksa Client ID, Secret, dan URI redirect
+* **Error database**:
 
-### Error Database
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 ```
 
-### Error Static Files
+* **Error static file**:
+
 ```bash
 python manage.py collectstatic
 ```
 
+---
+
 ## 📞 Support
 
-Jika ada pertanyaan atau masalah, silakan buat issue di repository ini. 
+Kalau ada masalah, silakan buka issue di repo GitHub proyek ini.
